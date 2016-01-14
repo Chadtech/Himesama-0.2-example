@@ -13,5 +13,5 @@ module.exports = Count = Himesama.createClass
   render: ->
     p
       className: 'point'
-      '' + @state.count
+      'Count : ' + @state.count
 

@@ -16,7 +16,8 @@ DOMCreate = (type) ->
 
     type:       type
     attributes: args[0]
-    children:   args.slice 1
+    children:   _.flatten (args.slice 1)
+
 
 
 Himesama = 
@@ -64,29 +65,64 @@ Himesama =
     @handleDirt @VirtualDOM
 
 
-  handleDirt: (node) ->
-    children = node.children
-    if node.dirty? and node.dirty
-      address = children[0].attributes[addressKey]
-      element = @getByAttribute addressKey, address
-      parent  = element.parentElement
-      parentsAddress = parent.getAttribute addressKey
-      
-      element.remove()
-
-      rendering = node.render()
-      @allocateAddress rendering, parentsAddress + '.0.0'
-      parent.appendChild @htmlify rendering
-
-    else
-      _.forEach children, (child) => @handleDirt child
-
-
   markDirty: (node, basis) ->
     if node.needs? and basis in node.needs
       node.dirty = true
     _.forEach node.children, (child, ci) =>
       @markDirty child, basis
+
+
+  handleDirt: (node) ->
+    children = node.children
+    if node.dirty? and node.dirty
+      # We are re rendering the node
+      # because its dirty
+
+
+      # Get the html element, get its address,
+      # gets its parent, get get its index number 
+      # within its parent
+      address = children[0].attributes[addressKey]
+      index   = address.slice 0, address.length - 2
+      index   = @getIndex index
+      element = @getByAttribute addressKey, address
+      parent  = element.parentElement
+
+      # Get the active element, ie, the one
+      # with the text caret in it (like an
+      # input or a textarea)
+      activeEl      = document.activeElement
+      activeAddress = activeEl.getAttribute addressKey
+      
+      # Get where the caret is (or, the text
+      # selection starts and stops )
+      if activeEl.type is 'text'
+        @textStart = activeEl.selectionStart
+        @textEnd   = activeEl.selectionEnd
+
+      # Get rid of that old dirty node
+      element.remove()
+
+      # Render up a fresh clean node
+      rendering = node.render()
+      @allocateAddress rendering, address
+
+      # Insert it under its parent, where
+      # we found it
+      parent.insertBefore (@htmlify rendering),
+        parent.childNodes[ index ]
+
+      # Focus back on the element that was active
+      # before we did this re rendering stuff
+      toFocus = @getByAttribute addressKey, activeAddress
+      toFocus.focus()
+
+      if toFocus.type is 'text'
+        toFocus.setSelectionRange @textStart, @textEnd
+
+    else
+      # If its not dirty, look deeper
+      _.forEach children, (child) => @handleDirt child
 
 
   allocateAddress: (node, address) ->

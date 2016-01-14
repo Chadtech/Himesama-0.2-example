@@ -15,6 +15,7 @@ body {
   webkit-font-smoothing: none;
   -webkit-font-smoothing: none;
   margin: 0;
+  margin-top: 2px;
 }
 .tracker {
   border-color: #1a2129;
@@ -97,13 +98,17 @@ body {
   display: table;
   clear: both;
   width: 100%;
+  height: 14px;
 }
 .column {
   float: left;
   margin-right: 5px;
   position: relative;
   width: 50px;
-  height: 9px;
+  height: 14px;
+}
+.column.wide {
+  width: 100px;
 }
 .content {
   margin: 0;
@@ -222,7 +227,7 @@ body {
   webkit-font-smoothing: none;
   -webkit-font-smoothing: none;
   outline: none;
-  width: 150px;
+  width: 200px;
 }
 .cell:hover {
   border-color: #c6b988;
@@ -247,7 +252,7 @@ body {
   webkit-font-smoothing: none;
   -webkit-font-smoothing: none;
   outline: none;
-  width: 150px;
+  width: 200px;
   background-color: #969d66;
   color: #060a00;
 }

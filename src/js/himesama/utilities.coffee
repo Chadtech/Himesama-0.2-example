@@ -17,6 +17,7 @@ module.exports = Utilities =
       if component.type is 'custom'
         component = component.children[0]
       output = _.reduce (_.keys component.attributes),
+
         (element, key) ->
           attribute = component.attributes[key]
 
@@ -46,5 +47,15 @@ module.exports = Utilities =
 
       output
 
+
   getByAttribute:  (key, value) ->
     querySelector '[' + key + '="' + value + '"]'
+
+
+  getIndex: (id) ->
+    output = ''
+    ci = id.length - 1
+    until id[ci] is '.'
+      output = id[ci] + output
+      ci--
+    output
