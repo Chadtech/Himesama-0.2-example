@@ -46,28 +46,5 @@ module.exports = Utilities =
 
       output
 
-  stringify: (component) ->
-    if _.isString component then component
-    else
-      output = _.reduce (_.keys component.attributes),
-        (sum, key) ->
-          attribute = component.attributes[key]
-          if key is 'className' then key = 'class'
-          if key is 'style'
-            attribute = makeStyleString attribute
-          key = _.reduce (key.split ''), (string, char) ->
-            if isUpperCase char
-              char = '-' + char.toLowerCase()
-            string + char
-          sum + key + '="' + attribute + '" '
-        '<' + component.type + ' '
-      
-      output += '>'
-      
-      _.forEach component.children, (child) =>
-        output += @stringify child
-
-      output + '</' + component.type + '>'
-
   getByAttribute:  (key, value) ->
     querySelector '[' + key + '="' + value + '"]'

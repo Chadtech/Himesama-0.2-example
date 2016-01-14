@@ -13,10 +13,9 @@ addressKey = 'himesama-address'
 DOMCreate = (type) ->
   ->
     args       = _.toArray arguments 
-    attributes = args[0]
 
     type:       type
-    attributes: attributes
+    attributes: args[0]
     children:   args.slice 1
 
 
@@ -28,42 +27,29 @@ Himesama =
 
   createClass: (c) -> 
     ->
-      args       = _.toArray arguments 
-      attributes = args[0]
-
-      # Output Himesama Component
       H = {}
-      _.forEach (_.keys c), (key) ->
-        if _.isFunction c[ key ]
-          H[ key ] = c[ key ].bind H
-        else
-          H[ key ] = c[ key ]
+      _.forEach (_.keys c), (k) ->
+        v = c[k]
+        v = v.bind H if _.isFunction v
+        H[k] = v
 
       H.dirty      = false
       H.setState   = Himesama.setState.bind Himesama
       H.state      = Himesama.state
-
       H.type       = 'custom'
-      H.attributes = attributes
+      H.attributes = arguments[0]
       H.children   = [ H.render() ]
       H
 
 
   setState: (payload) ->
     keys = _.keys payload
-    _.forEach keys, (key) =>
-      @state[key] = payload[key]
+    _.forEach keys, (k) =>
+      @state[k] = payload[k]
     @Rerender keys
 
 
   initState: (state) -> @state = state
-
-
-  getVirtualDOM: (root) ->
-    console.log 'yee', root.type
-    if root.type is 'custom'
-      root.children = root.render()
-    root
 
 
   Render: (root, mountPoint) ->
@@ -75,13 +61,13 @@ Himesama =
   Rerender: (bases) ->
     _.forEach bases, (key) =>
       @markDirty @VirtualDOM, key
+    @handleDirt @VirtualDOM
 
-    @checkForDirt @VirtualDOM
 
-
-  checkForDirt: (node) ->
+  handleDirt: (node) ->
+    children = node.children
     if node.dirty? and node.dirty
-      address = node.children[0].attributes[addressKey]
+      address = children[0].attributes[addressKey]
       element = @getByAttribute addressKey, address
       parent  = element.parentElement
       parentsAddress = parent.getAttribute addressKey
@@ -93,15 +79,12 @@ Himesama =
       parent.appendChild @htmlify rendering
 
     else
-      _.forEach node.children, (child) =>
-        @checkForDirt child
+      _.forEach children, (child) => @handleDirt child
 
 
   markDirty: (node, basis) ->
-    if node.type is 'custom'
-      if node.needs?
-        if basis in node.needs
-          node.dirty = true
+    if node.needs? and basis in node.needs
+      node.dirty = true
     _.forEach node.children, (child, ci) =>
       @markDirty child, basis
 
@@ -126,4 +109,4 @@ Himesama =
 Himesama.Render     = Himesama.Render.bind Himesama
 Himesama.initState  = Himesama.initState.bind Himesama
 
-module.exports = _.extend Himesama, (require './utilities')
+module.exports = _.extend Himesama, require './utilities'

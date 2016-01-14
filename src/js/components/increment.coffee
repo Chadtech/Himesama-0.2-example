@@ -9,13 +9,12 @@ Himesama = require '../himesama'
 module.exports = Increment = Himesama.createClass
 
   handle: ->
-    @setState counter: (@state.counter + 1)
+    @setState count: @state.count + 1
 
   render: ->
     input
       className:  'nullButton'
       type:       'submit'
       value:      '+'
-      event:
-        click:    @handle
+      event:      click: @handle
 

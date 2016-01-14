@@ -18,7 +18,7 @@ Increment = require './components/increment'
 Decrement = require './components/decrement'
 
 # State
-initState counter: 0
+initState count: 0
 
 
 App = Himesama.createClass

@@ -8,10 +8,10 @@ Himesama = require '../himesama'
 
 module.exports = Count = Himesama.createClass
 
-  needs: [ 'counter' ]
+  needs: [ 'count' ]
 
   render: ->
     p
       className: 'point'
-      '' + @state.counter
+      '' + @state.count
 
