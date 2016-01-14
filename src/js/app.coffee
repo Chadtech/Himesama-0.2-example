@@ -26,8 +26,6 @@ initState
 
 App = Himesama.createClass
 
-  coolNumber: 14
-
   render: -> 
 
     div null,

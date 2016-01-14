@@ -16,29 +16,30 @@ module.exports = Utilities =
     else
       if component.type is 'custom'
         component = component.children[0]
-      output = _.reduce (_.keys component.attributes),
-
-        (element, key) ->
+      keys = _.keys component.attributes
+      output = _.reduce keys, 
+        (el, key) ->
           attribute = component.attributes[key]
 
           switch key
             when 'className'
-              element.setAttribute 'class', attribute
+              el.setAttribute 'class', attribute
             when 'style'
               style = makeStyleString attribute
-              element.setAttribute 'style', style
+              el.setAttribute 'style', style
             when 'event'
               _.forEach (_.keys attribute), (event) =>
                 act = attribute[event]
-                element.addEventListener event, act
+                el.addEventListener event, act
             else
-              key = _.reduce (key.split ''), (str, char) ->
+              key = key.split ''
+              key = _.reduce key, (str, char) ->
                 if isUpperCase char
                   char = '-' + char.toLowerCase()
                 str + char
-              element.setAttribute key, attribute
-
-          element
+              el.setAttribute key, attribute
+              
+          el
 
         createElement component.type
 

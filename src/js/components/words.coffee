@@ -45,8 +45,7 @@ module.exports = Words = Himesama.createClass
       _.map @state.words, (word, i) ->
 
         div className:    'row',
-          # div className:  'column wide',
 
           p 
-            className:  'point'
+            className:    'point'
             i + ' ' + word

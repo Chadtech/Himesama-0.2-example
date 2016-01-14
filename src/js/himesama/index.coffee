@@ -7,8 +7,7 @@ _ = require 'lodash'
   querySelector } = require './himesama-doc'
 makeStyleString   = require './style-to-string' 
 
-IDKey      = 'himesama-id'
-addressKey = 'himesama-address'
+addressKey = 'himesama-id'
 
 DOMCreate = (type) ->
   ->
@@ -135,14 +134,14 @@ Himesama =
       @allocateAddress child, address + '.' + ci
 
 
-  DOM:
-    p:     DOMCreate 'p'
-    div:   DOMCreate 'div'
-    input: DOMCreate 'input'
-
-
-
 Himesama.Render     = Himesama.Render.bind Himesama
 Himesama.initState  = Himesama.initState.bind Himesama
+Himesama.DOM        = _.reduce ((require './dom-elements').split ' '), 
+    (sum, el) -> 
+      sum[el] = DOMCreate el
+      sum
+    {}
+
 
 module.exports = _.extend Himesama, require './utilities'
+
