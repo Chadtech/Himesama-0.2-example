@@ -31,10 +31,10 @@ module.exports = Utilities =
                 act = attribute[event]
                 element.addEventListener event, act
             else
-              key = _.reduce (key.split ''), (string, char) ->
+              key = _.reduce (key.split ''), (str, char) ->
                 if isUpperCase char
                   char = '-' + char.toLowerCase()
-                string + char
+                str + char
               element.setAttribute key, attribute
 
           element
